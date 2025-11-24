@@ -66,7 +66,7 @@ const SignUp = () => {
           <div className="text-center mb-8">
             <Link href="/" className="inline-block">
               <h1 className="text-3xl font-bold bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent">
-                MovieVerse
+                MunoFlix
               </h1>
             </Link>
             <p className="text-gray-400 mt-2">Create your adventure account</p>
@@ -191,5 +191,6 @@ const SignUp = () => {
     </div>
   );
 };
+
 
 export default SignUp;
