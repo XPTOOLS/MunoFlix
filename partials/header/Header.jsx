@@ -64,12 +64,12 @@ const Header = () => {
             <span className="text-2xl">MunoFlix</span>
           </Link>
           
-          {/* Search Icon and Hamburger menu */}
+          {/* Search Icon and Profile Icon - NO Hamburger */}
           <div className="flex items-center gap-4">
             <div className="text-white">
               <Search />
             </div>
-            <Responsive />
+            <Profile />
           </div>
         </div>
 
