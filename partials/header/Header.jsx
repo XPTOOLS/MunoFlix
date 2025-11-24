@@ -19,34 +19,36 @@ const Header = () => {
 
   return (
     <>
-      {/* Desktop Header - COMPLETELY HIDDEN on mobile */}
-      <div className={`${styles.container} hidden md:block`}>
-        <div className={styles.wrapper}>
-          <div className={styles.left}>
-            <Link href={"/"} className={`${nightTokyo.className} text-white flex items-center gap-2`}>
-              <div className="relative w-[50px]">
-                <Image
-                  src="/images/logo-2.png"
-                  className="absolute top-1/2 -translate-y-1/2 left-0"
-                  alt="MunoFlix"
-                  width={46}
-                  height={46}
-                />
-              </div>
-              <span className="text-3xl">MunoFlix</span>
-            </Link>
-            <Links />
-          </div>
+      {/* Desktop Header - Only shows on desktop */}
+      <div className="hidden lg:block">
+        <div className={styles.container}>
+          <div className={styles.wrapper}>
+            <div className={styles.left}>
+              <Link href={"/"} className={`${nightTokyo.className} text-white flex items-center gap-2`}>
+                <div className="relative w-[50px]">
+                  <Image
+                    src="/images/logo-2.png"
+                    className="absolute top-1/2 -translate-y-1/2 left-0"
+                    alt="MunoFlix"
+                    width={46}
+                    height={46}
+                  />
+                </div>
+                <span className="text-3xl">MunoFlix</span>
+              </Link>
+              <Links />
+            </div>
 
-          <div className={`${styles.right} min-[1390px]:w-[24%]`}>
-            <Search />
-            <Profile />
+            <div className={`${styles.right} min-[1390px]:w-[24%]`}>
+              <Search />
+              <Profile />
+            </div>
           </div>
         </div>
       </div>
 
-      {/* Mobile Header - ONLY shows on mobile */}
-      <div className="block md:hidden">
+      {/* Mobile Header - Only shows on mobile */}
+      <div className="lg:hidden">
         {/* Mobile Top Bar */}
         <div className="fixed top-0 left-0 right-0 bg-[#1a1a2e] border-b border-[#39374b] z-50 h-16 flex items-center justify-between px-4">
           <Link href={"/"} className={`${nightTokyo.className} text-white flex items-center gap-2`}>
