@@ -25,19 +25,19 @@ const Search = () => {
   if (width <= 590) {
     return (
       isSearchBoxOpen ? (
-        <div className="absolute w-[86%] top-1/2 left-0 -translate-y-1/2">
+        <div className="absolute w-[80%] top-1/2 left-4 -translate-y-1/2"> {/* Changed from left-0 to left-4 */}
           <div className="relative w-full">
 
-            <div className="h-12 flex items-center justify-between bg-[#231f2c]">
-              <div className="flex items-center text-white px-4 py-1 gap-2 rounded-md h-12 w-full">
-                <div className="text-xl">
+            <div className="h-10 flex items-center justify-between bg-[#231f2c] rounded-md">
+              <div className="flex items-center text-white px-3 py-1 gap-2 rounded-md h-10 w-full">
+                <div className="text-lg">
                   <IoIosSearch />
                 </div>
 
                 <input
                   type="text"
                   placeholder="Search"
-                  className="bg-transparent outline-none w-full"
+                  className="bg-transparent outline-none w-full text-sm"
                   value={searchValue}
                   onChange={e => setSearchValue(e.target.value)}
                   onKeyUp={e => {
@@ -48,7 +48,7 @@ const Search = () => {
                 />
               </div>
 
-              <div className="text-3xl text-white cursor-pointer mr-2" onClick={() => {
+              <div className="text-2xl text-white cursor-pointer mr-2" onClick={() => {
                 setIsSearchBoxOpen(false)
                 setSearchValue("")
               }}>
@@ -64,7 +64,7 @@ const Search = () => {
           </div>
         </div>
       ) : (
-        <div className="text-2xl text-white cursor-pointer" onClick={() => setIsSearchBoxOpen(true)}>
+        <div className="text-xl text-white cursor-pointer" onClick={() => setIsSearchBoxOpen(true)}>
           <IoIosSearch />
         </div>
       )
