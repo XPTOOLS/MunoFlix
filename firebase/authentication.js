@@ -38,7 +38,7 @@ export const signUpWithEmail = async (email, password, username) => {
       photoURL: "",
     });
     
-    toast.success(`Welcome to MovieVerse, ${username}!`);
+    toast.success(`Welcome to MunoFlix, ${username}!`);
     return { success: true, user };
     
   } catch (error) {
@@ -167,4 +167,5 @@ export const createNewUserProfile = async (userdetails) => {
     console.error("Error setting user document: ", error);
     throw new Error("Failed to add user. Please try again later.");
   }
+
 };
