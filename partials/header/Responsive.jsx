@@ -1,23 +1,28 @@
 "use client"
-import { LuAlignLeft } from "react-icons/lu";
-import Links from "./Links";
-import { useState } from "react";
+import { useState } from "react"
+import Links from "./Links"
 
 const Responsive = () => {
-  const [isModelOpened, setIsModelOpened] = useState(false)
+  const [isOpen, setIsOpen] = useState(false)
+
   return (
-    <div className="flex">
-      <div
-        className="text-3xl text-white flex items-center justify-center mr-2 cursor-pointer min-[990px]:hidden"
-        onClick={() => setIsModelOpened(!isModelOpened)}
+    <div className="md:hidden">
+      {/* Hamburger Button - ONLY this button, no other icons */}
+      <button
+        onClick={() => setIsOpen(!isOpen)}
+        className="text-white p-2"
       >
-        <LuAlignLeft />
-      </div>
+        <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
+        </svg>
+      </button>
 
-      {isModelOpened ? <div className="w-44 bg-[#19172596] backdrop-blur-[26px] border-2 border-[#ffffff0a] absolute top-20 rounded-lg">
-        <Links isMobile />
-      </div> : null}
-
+      {/* Mobile Menu */}
+      {isOpen && (
+        <div className="fixed top-16 left-0 right-0 bottom-0 bg-[#1a1a2e] z-40 p-4">
+          <Links isMobile={true} />
+        </div>
+      )}
     </div>
   )
 }
