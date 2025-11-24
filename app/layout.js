@@ -15,7 +15,10 @@ export default async function RootLayout({ children }) {
         <UserInfoProvider>
           <Header />
           <VisitTracker />
-          {children}
+          {/* Mobile padding: top for mobile header, bottom for mobile nav */}
+          <main className="md:pt-24 pt-16 pb-16 md:pb-0">
+            {children}
+          </main>
         </UserInfoProvider>
         <ToastContainer draggable theme="dark" />
       </body>
