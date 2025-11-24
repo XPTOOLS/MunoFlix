@@ -3,6 +3,7 @@ import { useState } from 'react';
 import { signUpWithEmail, signinwithGoogle } from '@/firebase/authentication';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
+import ThreeDMarquee from '@/components/ui/ThreeDMarquee';
 
 const SignUp = () => {
   const [formData, setFormData] = useState({
@@ -13,6 +14,26 @@ const SignUp = () => {
   });
   const [loading, setLoading] = useState(false);
   const router = useRouter();
+
+  // Latest movie posters from TMDB (2024 releases)
+  const moviePosters = [
+    'https://image.tmdb.org/t/p/w500/8Gxv8gSFCU0XGDykEGv7zR1n2ua.jpg', // Dune: Part Two
+    'https://image.tmdb.org/t/p/w500/kDp1vUBnMpe8ak4rjgl3cLELqjU.jpg', // Kung Fu Panda 4
+    'https://image.tmdb.org/t/p/w500/1XDDXPXGiI8id7MrUxK36ke7gkX.jpg', // Ghostbusters: Frozen Empire
+    'https://image.tmdb.org/t/p/w500/gPbM0MK8CP8A174rmUwGsADNYKD.jpg', // Godzilla x Kong: The New Empire
+    'https://image.tmdb.org/t/p/w500/1pdfLvkbY9ohJlCjQHlyCZ2N0ce.jpg', // IF
+    'https://image.tmdb.org/t/p/w500/f1AQhx6ZfGhPZFTVKgxG91PhEYc.jpg', // The Fall Guy
+    'https://image.tmdb.org/t/p/w500/2SSEUI2ebC7lc5Kp0JbR6L9uVE2.jpg', // Kingdom of the Planet of the Apes
+    'https://image.tmdb.org/t/p/w500/tlNfsuJ6iQPnWJ2OFCwKZkf0n0V.jpg', // Furiosa: A Mad Max Saga
+    'https://image.tmdb.org/t/p/w500/z1p8JHZPZkZNgCe0VrQK3a6qHqI.jpg', // Deadpool & Wolverine
+    'https://image.tmdb.org/t/p/w500/nlCHUWjY9XWbuEUQauCBgnY8ymF.jpg', // The Batman Part II
+    'https://image.tmdb.org/t/p/w500/5mzr6JZbrqnqD8rCEvPhuCE5Fw2.jpg', // Joker: Folie à Deux
+    'https://image.tmdb.org/t/p/w500/8cQT7eVVeYGDXBlYAcIk2AMdNQT.jpg', // Inside Out 2
+    'https://image.tmdb.org/t/p/w500/pQYHouPsDw32FhDLr7X3xt4gSaw.jpg', // A Quiet Place: Day One
+    'https://image.tmdb.org/t/p/w500/5mzr6JZbrqnqD8rCEvPhuCE5Fw2.jpg', // Borderlands
+    'https://image.tmdb.org/t/p/w500/47SVaO7b3eYbUXs8bIMJ8EY4yQh.jpg', // Twisters
+    'https://image.tmdb.org/t/p/w500/5mzr6JZbrqnqD8rCEvPhuCE5Fw2.jpg', // Beetlejuice Beetlejuice
+  ];
 
   const handleChange = (e) => {
     setFormData({
@@ -38,7 +59,7 @@ const SignUp = () => {
     const result = await signUpWithEmail(formData.email, formData.password, formData.username);
     
     if (result.success) {
-      router.push('/'); // Redirect to home after successful signup
+      router.push('/');
     }
     
     setLoading(false);
@@ -51,7 +72,18 @@ const SignUp = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-[#12111a] via-[#1a1825] to-[#2d2a44] flex items-center justify-center p-4">
+    <div className="min-h-screen bg-gradient-to-br from-[#12111a] via-[#1a1825] to-[#2d2a44] flex items-center justify-center p-4 relative overflow-hidden">
+      {/* 3D Marquee Background */}
+      <div className="absolute inset-0 opacity-20">
+        <ThreeDMarquee 
+          images={moviePosters} 
+          aspect="poster"
+        />
+      </div>
+
+      {/* Dark overlay for better readability */}
+      <div className="absolute inset-0 bg-black/40"></div>
+
       {/* Background Effects */}
       <div className="fixed inset-0 overflow-hidden">
         <div className="absolute -top-40 -left-40 w-80 h-80 bg-purple-500/20 rounded-full blur-3xl"></div>
@@ -61,7 +93,7 @@ const SignUp = () => {
 
       {/* Signup Card */}
       <div className="relative z-10 w-full max-w-md">
-        <div className="bg-[#1e1c2f] border border-[#39374b] rounded-2xl shadow-2xl p-8">
+        <div className="bg-[#1e1c2f]/90 backdrop-blur-md border border-[#39374b] rounded-2xl shadow-2xl p-8">
           {/* Header */}
           <div className="text-center mb-8">
             <Link href="/" className="inline-block">
@@ -191,6 +223,5 @@ const SignUp = () => {
     </div>
   );
 };
-
 
 export default SignUp;
