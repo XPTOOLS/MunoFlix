@@ -1,0 +1,29 @@
+.cardImage::after {
+  content: "";
+  height: 40%;
+  width: 100%;
+  position: absolute;
+  z-index: 1;
+  display: flex;
+  background: linear-gradient(360deg, #12111a 20%, transparent 100%);
+  left: 0;
+  bottom: 0;
+  border-radius: 0 0 16px 16px;
+  opacity: 0.8;
+}
+
+.cardImage:hover::after {
+  opacity: 0;
+  transition: 0.3s ease-in-out;
+}
+
+/* Keep rating visible on trending page */
+.trendingPage .rating {
+  opacity: 1 !important;
+}
+
+.cardImage:hover .rating {
+  opacity: 1;
+  transform: scale(1.05);
+  transition: 0.3s ease-in-out;
+}
