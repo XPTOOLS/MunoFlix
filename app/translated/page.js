@@ -2,7 +2,7 @@
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { getAllTranslatedMovies } from '@/data/translated-movies';
-import HoverPosterCard from '@/components/Cards/HoverPosterCard/HoverPosterCard';
+import Card from '@/components/Cards/Card/Card';
 
 const TranslatedPage = () => {
   const [movies, setMovies] = useState([]);
@@ -27,7 +27,7 @@ const TranslatedPage = () => {
     loadMovies();
   }, []);
 
-  // Format movie data for HoverPosterCard component
+  // Format movie data for Card component
   const formatMovieForCard = (movie) => ({
     id: movie.id,
     title: movie.title,
@@ -38,10 +38,12 @@ const TranslatedPage = () => {
     vote_average: movie.vote_average,
     genre_ids: movie.genre.map((_, index) => index),
     genres: movie.genre.map(name => ({ id: name.toLowerCase(), name })),
-    media_type: movie.media_type,
+    media_type: movie.media_type || 'movie',
     runtime: parseInt(movie.duration) || 0,
     adult: movie.adult,
-    original_language: movie.original_language
+    original_language: movie.original_language || 'lg', // Luganda language code
+    // Add translation identifier
+    isTranslated: true
   });
 
   // Material Wave Loading Component
@@ -96,13 +98,16 @@ const TranslatedPage = () => {
           </div>
         </div>
 
-        {/* Movies Grid */}
+        {/* Movies Grid - 3 movies per line on mobile, scaling up */}
         {movies.length > 0 ? (
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6">
-            {movies.map((movie) => (
-              <div key={movie.id} className="group">
-                <HoverPosterCard movie={formatMovieForCard(movie)} />
-              </div>
+          <div className="mt-8 grid grid-cols-3 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-3">
+            {movies.map((movie, index) => (
+              <Card 
+                key={movie.id} 
+                data={formatMovieForCard(movie)} 
+                index={index}
+                type="movie"
+              />
             ))}
           </div>
         ) : (
