@@ -33,10 +33,13 @@ const Card = ({ data, index, loading, hidden, type }) => {
     ></div>
   }
 
+  // Check if movie is translated
+  const isTranslated = data.isTranslated || data.id?.includes?.('translated-') || data.original_language === 'lg';
+
   return (
     <WithHoverCard movie={data}>
       <motion.div className="aspect-[9/14] rounded-2xl cursor-pointer mb-2 relative" variants={listItem}>
-        <Link href={`/watch/${data?.id}?media_type=${data?.media_type || type || "movie"}`} className={`${styles.wrapper}`}>
+        <Link href={isTranslated ? `/watch/translated/${data?.id}` : `/watch/${data?.id}?media_type=${data?.media_type || type || "movie"}`} className={`${styles.wrapper}`}>
           <Image
             src={data?.poster_path ? `https://image.tmdb.org/t/p/w500${data?.poster_path}` : `https://s4.anilist.co/file/anilistcdn/character/large/default.jpg`}
             alt="Trending"
@@ -44,6 +47,24 @@ const Card = ({ data, index, loading, hidden, type }) => {
             height={280}
             className="object-cover w-full h-full rounded-2xl cursor-pointer aspect-[4/6] pointer-events-none"
           />
+
+          {/* Translation Badge - Smaller */}
+          {isTranslated && (
+            <div className="absolute top-1 left-1 z-10">
+              <div className="bg-green-600 text-white px-1.5 py-0.5 rounded text-[10px] font-semibold flex items-center gap-0.5 shadow-lg">
+                <span className="text-[8px]">🇺🇬</span>
+                <span>LG</span>
+              </div>
+            </div>
+          )}
+
+          {/* Rating Badge - Smaller */}
+          {data?.vote_average && (
+            <div className="absolute top-1 right-1 bg-black/80 backdrop-blur-sm text-white px-1.5 py-0.5 rounded text-[10px] flex items-center gap-0.5 z-10">
+              <span className="text-[8px]">⭐</span>
+              <span>{data.vote_average.toFixed(1)}</span>
+            </div>
+          )}
 
           <div className={`${styles.info} bottom-2 left-0 right-0 absolute text-xs font-medium flex flex-wrap items-center justify-center gap-[.3rem] z-[7] opacity-0`}>
             <span className="uppercase text-slate-200">
