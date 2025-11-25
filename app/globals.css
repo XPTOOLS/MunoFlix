@@ -88,4 +88,26 @@ body {
 
 .animate-wave {
   animation: wave 1.2s ease-in-out infinite;
+
+}
+
+/* Remove borders from all images */
+img {
+  border: none !important;
+  outline: none !important;
+}
+
+/* Specific fix for logo */
+img[src*="logo"], 
+img[alt*="logo"],
+.logo img {
+  border: none !important;
+  outline: none !important;
+  box-shadow: none !important;
+}
+
+/* Remove any background on logo container */
+.logo {
+  background: transparent !important;
+  border: none !important;
 }
