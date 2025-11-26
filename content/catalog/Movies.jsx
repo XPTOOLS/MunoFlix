@@ -4,7 +4,7 @@ import Card from "@/components/Cards/Card/Card";
 import { useSearchParams } from "next/navigation";
 import { useEffect, useState, useMemo, useCallback } from "react";
 import Pagination from "./Pagination";
-import { getMultiSearch, getSearch } from "@/lib/MultiFunctions";
+import { getMultiSearch, getSearch, getCombinedSearch } from "@/lib/MultiFunctions";
 import Options from "./Options";
 import { getTrendingMovies } from "@/lib/MoviesFunctions";
 
@@ -41,13 +41,33 @@ const Movies = () => {
     const fetchData = async () => {
       setLoading(true);
       try {
-        const data = await (
-          search !== "" ?
-            type === "all"
-              ? getMultiSearch(search, page, isAdult)
-              : getSearch(search, page, isAdult, type.toLowerCase())
-            : getTrendingMovies(type.toLowerCase(), page)
-        );
+        let data;
+        
+        if (search !== "") {
+          // Use combined search for search queries to include translated movies
+          if (type === "all") {
+            data = await getCombinedSearch(search, page, isAdult);
+          } else {
+            // For specific types (movie/tv), use regular search but still include translated movies if type is movie
+            if (type.toLowerCase() === "movie") {
+              // For movie searches, get combined results and filter for movies only
+              const combinedData = await getCombinedSearch(search, page, isAdult);
+              data = {
+                ...combinedData,
+                results: combinedData.results.filter(item => 
+                  item.media_type === 'movie' || item.id?.startsWith?.('translated-')
+                )
+              };
+            } else {
+              // For TV searches, use regular search
+              data = await getSearch(search, page, isAdult, type.toLowerCase());
+            }
+          }
+        } else {
+          // For trending/browsing (no search), use regular TMDB data
+          data = await getTrendingMovies(type.toLowerCase(), page);
+        }
+        
         if (data?.results) {
           setMovies(data.results);
           setTotalPages(data.total_pages || 1);
@@ -71,7 +91,7 @@ const Movies = () => {
 
       <Options />
 
-      <div className="w-full h-full grid grid-auto-fit gap-3">
+      <div className="w-full h-full grid grid-cols-3 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-3">
         {loading ? loadingCards : movies?.map((item, index) => <Card data={item} key={index} type={type} />)}
         {(!loading && movies?.length < 6) && Array.from({ length: 8 - movies?.length }).map((_, index) => <Card key={index} index={index} hidden />)}
       </div>
