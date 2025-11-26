@@ -26,7 +26,7 @@ const TranslatedMoviePlayer = ({ movie }) => {
     {
       icon: <FaFacebook className="text-blue-500" />,
       name: "Facebook",
-      url: "https://www.facebook.com/profile.php?id=61556002877589",
+      url: "https://www.facebook.com/share/1H8BxjWw9t/",
     },
     {
       icon: <FaTwitter className="text-blue-400" />,
@@ -41,17 +41,17 @@ const TranslatedMoviePlayer = ({ movie }) => {
     {
       icon: <FaYoutube className="text-red-500" />,
       name: "YouTube",
-      url: "https://youtube.com/@freenethubtech?si=q1t1496Zj6P9cmMs",
+      url: "https://youtube.com/@MunoFlix?si=q1t1496Zj6P9cmMs",
     },
     {
       icon: <FaTelegram className="text-blue-400" />,
       name: "Telegram",
-      url: "https://t.me/XPTOOLSTEAM",
+      url: "https://t.me/MunoFlix",
     },
     {
       icon: <FaWhatsapp className="text-green-500" />,
       name: "WhatsApp",
-      url: "https://wa.me/25761787221",
+      url: "https://whatsapp.com/channel/0029VbC1ASPG8l5DV7lyb711",
     }
   ];
 
