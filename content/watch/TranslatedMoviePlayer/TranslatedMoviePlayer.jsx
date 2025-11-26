@@ -1,7 +1,11 @@
 "use client";
 import { useState, useRef, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import { FaPlay, FaPause, FaVolumeUp, FaVolumeMute, FaExpand, FaCompress, FaStepBackward, FaStepForward, FaDownload } from 'react-icons/fa';
+import { 
+  FaPlay, FaPause, FaVolumeUp, FaVolumeMute, FaExpand, FaCompress, 
+  FaStepBackward, FaStepForward, FaDownload, FaFacebook, FaTwitter, 
+  FaInstagram, FaYoutube, FaTelegram, FaWhatsapp 
+} from 'react-icons/fa';
 import './translated-player.css';
 
 const TranslatedMoviePlayer = ({ movie }) => {
@@ -15,6 +19,51 @@ const TranslatedMoviePlayer = ({ movie }) => {
   const [isFullscreen, setIsFullscreen] = useState(false);
   const [showControls, setShowControls] = useState(true);
   const [buffering, setBuffering] = useState(false);
+  const [activeTooltip, setActiveTooltip] = useState('');
+
+  // Social media links
+  const socialLinks = [
+    {
+      icon: <FaFacebook className="text-blue-500" />,
+      name: "Facebook",
+      url: "https://www.facebook.com/profile.php?id=61556002877589",
+    },
+    {
+      icon: <FaTwitter className="text-blue-400" />,
+      name: "Twitter", 
+      url: "https://twitter.com/munoflix",
+    },
+    {
+      icon: <FaInstagram className="text-pink-400" />,
+      name: "Instagram",
+      url: "https://instagram.com/munoflix",
+    },
+    {
+      icon: <FaYoutube className="text-red-500" />,
+      name: "YouTube",
+      url: "https://youtube.com/@freenethubtech?si=q1t1496Zj6P9cmMs",
+    },
+    {
+      icon: <FaTelegram className="text-blue-400" />,
+      name: "Telegram",
+      url: "https://t.me/XPTOOLSTEAM",
+    },
+    {
+      icon: <FaWhatsapp className="text-green-500" />,
+      name: "WhatsApp",
+      url: "https://wa.me/25761787221",
+    }
+  ];
+
+  // Tooltip content for controls
+  const tooltips = {
+    play: isPlaying ? 'Pause (k)' : 'Play (k)',
+    backward: 'Rewind 10s (j)',
+    forward: 'Forward 10s (l)',
+    volume: isMuted ? 'Unmute (m)' : 'Mute (m)',
+    fullscreen: isFullscreen ? 'Exit fullscreen (f)' : 'Fullscreen (f)',
+    download: 'Download movie'
+  };
 
   useEffect(() => {
     const video = videoRef.current;
@@ -29,6 +78,35 @@ const TranslatedMoviePlayer = ({ movie }) => {
     video.addEventListener('loadedmetadata', updateDuration);
     video.addEventListener('waiting', handleWaiting);
     video.addEventListener('playing', handlePlaying);
+
+    // Keyboard shortcuts
+    const handleKeyPress = (e) => {
+      if (!video) return;
+      
+      switch(e.key.toLowerCase()) {
+        case ' ': // Space bar
+        case 'k':
+          e.preventDefault();
+          togglePlay();
+          break;
+        case 'j':
+          e.preventDefault();
+          skipBackward();
+          break;
+        case 'l':
+          e.preventDefault();
+          skipForward();
+          break;
+        case 'm':
+          e.preventDefault();
+          toggleMute();
+          break;
+        case 'f':
+          e.preventDefault();
+          toggleFullscreen();
+          break;
+      }
+    };
 
     // Auto-hide controls after 3 seconds
     let controlsTimeout;
@@ -47,6 +125,7 @@ const TranslatedMoviePlayer = ({ movie }) => {
 
     document.addEventListener('mousemove', handleMouseMove);
     document.addEventListener('touchstart', handleTouchStart);
+    document.addEventListener('keydown', handleKeyPress);
 
     // Handle fullscreen change
     const handleFullscreenChange = () => {
@@ -62,10 +141,11 @@ const TranslatedMoviePlayer = ({ movie }) => {
       video.removeEventListener('playing', handlePlaying);
       document.removeEventListener('mousemove', handleMouseMove);
       document.removeEventListener('touchstart', handleTouchStart);
+      document.removeEventListener('keydown', handleKeyPress);
       document.removeEventListener('fullscreenchange', handleFullscreenChange);
       clearTimeout(controlsTimeout);
     };
-  }, []);
+  }, [isPlaying, isMuted, isFullscreen]);
 
   const togglePlay = () => {
     const video = videoRef.current;
@@ -164,188 +244,256 @@ const TranslatedMoviePlayer = ({ movie }) => {
 
   return (
     <div className="translated-player-container">
-      {/* Video Container - YouTube-like sizing */}
-      <div 
-        className="translated-video-wrapper"
-        onMouseEnter={() => setShowControls(true)}
-        onMouseLeave={() => setShowControls(false)}
-        onTouchStart={() => setShowControls(true)}
-      >
-        {/* Video Element */}
-        <video
-          ref={videoRef}
-          className="translated-video-element"
-          src={movie.videoUrl}
-          poster={movie.poster}
-          onClick={handleVideoClick}
-          onEnded={() => setIsPlaying(false)}
-          playsInline
-          webkit-playsinline="true"
-        >
-          Your browser does not support the video tag.
-        </video>
-
-        {/* Buffering Indicator */}
-        {buffering && (
-          <div className="translated-buffering">
-            <div className="translated-buffering-spinner"></div>
-            <div>Loading...</div>
-          </div>
-        )}
-
-        {/* Controls Overlay */}
-        <div 
-          className={`translated-controls-overlay ${showControls ? 'visible' : ''}`}
-        >
-          {/* Top Bar */}
-          <div className="translated-top-bar">
-            <button
-              onClick={handleBack}
-              className="translated-back-button"
-              type="button"
+      {/* Main Content - YouTube-like layout */}
+      <div className="translated-main-content">
+        {/* Video Player - Left Side */}
+        <div className="translated-video-section">
+          <div 
+            className="translated-video-wrapper"
+            onMouseEnter={() => setShowControls(true)}
+            onMouseLeave={() => setShowControls(false)}
+            onTouchStart={() => setShowControls(true)}
+          >
+            {/* Video Element */}
+            <video
+              ref={videoRef}
+              className="translated-video-element"
+              src={movie.videoUrl}
+              poster={movie.poster}
+              onClick={handleVideoClick}
+              onEnded={() => setIsPlaying(false)}
+              playsInline
+              webkit-playsinline="true"
             >
-              ← Back
-            </button>
-            
-            <div className="translated-title">
-              {movie.title}
-            </div>
-          </div>
+              Your browser does not support the video tag.
+            </video>
 
-          {/* Center Play Button - Only show when video is not playing */}
-          {!isPlaying && (
-            <div className="translated-center-play">
-              <button
-                onClick={togglePlay}
-                className="translated-play-button"
-                type="button"
-              >
-                <FaPlay className="translated-play-icon" />
-              </button>
-            </div>
-          )}
+            {/* Buffering Indicator */}
+            {buffering && (
+              <div className="translated-buffering">
+                <div className="translated-buffering-spinner"></div>
+                <div>Loading...</div>
+              </div>
+            )}
 
-          {/* Bottom Controls */}
-          <div className="translated-bottom-controls">
-            {/* Progress Bar */}
-            <div className="translated-progress-container">
-              <input
-                type="range"
-                min="0"
-                max={duration || 0}
-                value={currentTime}
-                onChange={handleSeek}
-                className="translated-progress-bar"
-              />
-            </div>
-
-            {/* Control Buttons */}
-            <div className="translated-control-buttons">
-              <div className="translated-left-controls">
-                {/* Play/Pause */}
+            {/* Controls Overlay */}
+            <div 
+              className={`translated-controls-overlay ${showControls ? 'visible' : ''}`}
+            >
+              {/* Top Bar */}
+              <div className="translated-top-bar">
                 <button
-                  onClick={togglePlay}
-                  className="translated-control-button"
+                  onClick={handleBack}
+                  className="translated-back-button"
                   type="button"
                 >
-                  {isPlaying ? (
-                    <FaPause className="translated-control-icon" />
-                  ) : (
-                    <FaPlay className="translated-control-icon" />
-                  )}
+                  ← Back
                 </button>
+                
+                <div className="translated-title">
+                  {movie.title}
+                </div>
+              </div>
 
-                {/* Skip Backward */}
-                <button
-                  onClick={skipBackward}
-                  className="translated-control-button translated-skip-button"
-                  type="button"
-                >
-                  <FaStepBackward className="translated-control-icon" />
-                </button>
-
-                {/* Skip Forward */}
-                <button
-                  onClick={skipForward}
-                  className="translated-control-button translated-skip-button"
-                  type="button"
-                >
-                  <FaStepForward className="translated-control-icon" />
-                </button>
-
-                {/* Volume Control */}
-                <div className="translated-volume-control">
+              {/* Center Play Button - Only show when video is not playing */}
+              {!isPlaying && (
+                <div className="translated-center-play">
                   <button
-                    onClick={toggleMute}
-                    className="translated-control-button"
+                    onClick={togglePlay}
+                    className="translated-play-button"
                     type="button"
                   >
-                    {isMuted || volume === 0 ? (
-                      <FaVolumeMute className="translated-control-icon" />
-                    ) : (
-                      <FaVolumeUp className="translated-control-icon" />
-                    )}
+                    <FaPlay className="translated-play-icon" />
                   </button>
+                </div>
+              )}
+
+              {/* Bottom Controls */}
+              <div className="translated-bottom-controls">
+                {/* Progress Bar */}
+                <div className="translated-progress-container">
                   <input
                     type="range"
                     min="0"
-                    max="1"
-                    step="0.1"
-                    value={volume}
-                    onChange={handleVolumeChange}
-                    className="translated-volume-slider"
+                    max={duration || 0}
+                    value={currentTime}
+                    onChange={handleSeek}
+                    className="translated-progress-bar"
                   />
                 </div>
 
-                {/* Time Display */}
-                <span className="translated-time-display">
-                  {formatTime(currentTime)} / {formatTime(duration)}
-                </span>
-              </div>
+                {/* Control Buttons */}
+                <div className="translated-control-buttons">
+                  <div className="translated-left-controls">
+                    {/* Play/Pause */}
+                    <div className="translated-tooltip-container">
+                      <button
+                        onClick={togglePlay}
+                        className="translated-control-button"
+                        type="button"
+                        onMouseEnter={() => setActiveTooltip('play')}
+                        onMouseLeave={() => setActiveTooltip('')}
+                      >
+                        {isPlaying ? (
+                          <FaPause className="translated-control-icon" />
+                        ) : (
+                          <FaPlay className="translated-control-icon" />
+                        )}
+                      </button>
+                      {activeTooltip === 'play' && (
+                        <div className="translated-tooltip">{tooltips.play}</div>
+                      )}
+                    </div>
 
-              {/* Fullscreen Button */}
-              <button
-                onClick={toggleFullscreen}
-                className="translated-control-button"
-                type="button"
-              >
-                {isFullscreen ? (
-                  <FaCompress className="translated-control-icon" />
-                ) : (
-                  <FaExpand className="translated-control-icon" />
-                )}
-              </button>
+                    {/* Skip Backward */}
+                    <div className="translated-tooltip-container">
+                      <button
+                        onClick={skipBackward}
+                        className="translated-control-button translated-skip-button"
+                        type="button"
+                        onMouseEnter={() => setActiveTooltip('backward')}
+                        onMouseLeave={() => setActiveTooltip('')}
+                      >
+                        <FaStepBackward className="translated-control-icon" />
+                      </button>
+                      {activeTooltip === 'backward' && (
+                        <div className="translated-tooltip">{tooltips.backward}</div>
+                      )}
+                    </div>
+
+                    {/* Skip Forward */}
+                    <div className="translated-tooltip-container">
+                      <button
+                        onClick={skipForward}
+                        className="translated-control-button translated-skip-button"
+                        type="button"
+                        onMouseEnter={() => setActiveTooltip('forward')}
+                        onMouseLeave={() => setActiveTooltip('')}
+                      >
+                        <FaStepForward className="translated-control-icon" />
+                      </button>
+                      {activeTooltip === 'forward' && (
+                        <div className="translated-tooltip">{tooltips.forward}</div>
+                      )}
+                    </div>
+
+                    {/* Volume Control */}
+                    <div className="translated-volume-control translated-tooltip-container">
+                      <button
+                        onClick={toggleMute}
+                        className="translated-control-button"
+                        type="button"
+                        onMouseEnter={() => setActiveTooltip('volume')}
+                        onMouseLeave={() => setActiveTooltip('')}
+                      >
+                        {isMuted || volume === 0 ? (
+                          <FaVolumeMute className="translated-control-icon" />
+                        ) : (
+                          <FaVolumeUp className="translated-control-icon" />
+                        )}
+                      </button>
+                      {activeTooltip === 'volume' && (
+                        <div className="translated-tooltip">{tooltips.volume}</div>
+                      )}
+                      <input
+                        type="range"
+                        min="0"
+                        max="1"
+                        step="0.1"
+                        value={volume}
+                        onChange={handleVolumeChange}
+                        className="translated-volume-slider"
+                      />
+                    </div>
+
+                    {/* Time Display */}
+                    <span className="translated-time-display">
+                      {formatTime(currentTime)} / {formatTime(duration)}
+                    </span>
+                  </div>
+
+                  {/* Fullscreen Button */}
+                  <div className="translated-tooltip-container">
+                    <button
+                      onClick={toggleFullscreen}
+                      className="translated-control-button"
+                      type="button"
+                      onMouseEnter={() => setActiveTooltip('fullscreen')}
+                      onMouseLeave={() => setActiveTooltip('')}
+                    >
+                      {isFullscreen ? (
+                        <FaCompress className="translated-control-icon" />
+                      ) : (
+                        <FaExpand className="translated-control-icon" />
+                      )}
+                    </button>
+                    {activeTooltip === 'fullscreen' && (
+                      <div className="translated-tooltip">{tooltips.fullscreen}</div>
+                    )}
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Movie Info Below Video */}
+          <div className="translated-movie-info-panel">
+            <h1 className="translated-movie-title">{movie.title}</h1>
+            <p className="translated-movie-description">{movie.description}</p>
+            <div className="translated-genre-tags">
+              {movie.genre.map((genre, index) => (
+                <span key={index} className="translated-genre-tag">
+                  {genre}
+                </span>
+              ))}
             </div>
           </div>
         </div>
-      </div>
 
-      {/* Movie Info Panel */}
-      <div className="translated-movie-info-panel">
-        <h1 className="translated-movie-title">{movie.title}</h1>
-        <p className="translated-movie-description">{movie.description}</p>
-        <div className="translated-genre-tags">
-          {movie.genre.map((genre, index) => (
-            <span key={index} className="translated-genre-tag">
-              {genre}
-            </span>
-          ))}
-        </div>
-      </div>
+        {/* Sidebar - Right Side */}
+        <div className="translated-sidebar">
+          {/* Download Section */}
+          <div className="translated-download-container">
+            <h2 className="translated-download-title">Download Movie</h2>
+            <div className="translated-tooltip-container">
+              <a 
+                href={movie.videoUrl} 
+                target="_blank" 
+                rel="noopener noreferrer"
+                className="translated-download-button"
+                onMouseEnter={() => setActiveTooltip('download')}
+                onMouseLeave={() => setActiveTooltip('')}
+              >
+                <FaDownload className="translated-download-icon" />
+                Download {movie.title}
+              </a>
+              {activeTooltip === 'download' && (
+                <div className="translated-tooltip">{tooltips.download}</div>
+              )}
+            </div>
+          </div>
 
-      {/* Download Section */}
-      <div className="translated-download-section">
-        <div className="translated-download-container">
-          <h2 className="translated-download-title">Download Movie</h2>
-          <a 
-            href={movie.videoUrl} 
-            target="_blank" 
-            rel="noopener noreferrer"
-            className="translated-download-button"
-          >
-            <FaDownload className="translated-download-icon" />
-            Download {movie.title}
-          </a>
+          {/* Social Media Section */}
+          <div className="translated-social-section">
+            <h3 className="translated-social-title">Follow Us</h3>
+            <div className="translated-social-grid">
+              {socialLinks.map((social, index) => (
+                <a
+                  key={index}
+                  href={social.url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="translated-social-link"
+                  title={social.name}
+                >
+                  <div className="translated-social-icon">
+                    {social.icon}
+                  </div>
+                  <span className="translated-social-name">{social.name}</span>
+                </a>
+              ))}
+            </div>
+          </div>
         </div>
       </div>
     </div>
