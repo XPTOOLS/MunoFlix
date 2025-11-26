@@ -18,6 +18,15 @@ const Search = () => {
     setHasMounted(true);
   }, []);
 
+  const handleSearchSubmit = () => {
+    if (searchValue.trim()) {
+      // Use '/catalog' (without movies prefix) to match your route structure
+      router.push(`/catalog?q=${encodeURIComponent(searchValue.trim())}`);
+      setIsSearchBoxOpen(false);
+      setSearchValue("");
+    }
+  };
+
   if (!hasMounted) {
     return null; // or a loader/spinner
   }
@@ -25,7 +34,7 @@ const Search = () => {
   if (width <= 590) {
     return (
       isSearchBoxOpen ? (
-        <div className="absolute w-[80%] top-1/2 left-4 -translate-y-1/2"> {/* Changed from left-0 to left-4 */}
+        <div className="absolute w-[80%] top-1/2 left-4 -translate-y-1/2">
           <div className="relative w-full">
 
             <div className="h-10 flex items-center justify-between bg-[#231f2c] rounded-md">
@@ -42,7 +51,7 @@ const Search = () => {
                   onChange={e => setSearchValue(e.target.value)}
                   onKeyUp={e => {
                     if (e.key === "Enter") {
-                      router.push(`/catalog?q=${searchValue}`);
+                      handleSearchSubmit();
                     }
                   }}
                 />
@@ -81,18 +90,22 @@ const Search = () => {
         <input
           type="text"
           placeholder="Search"
-          className="bg-[#231f2c] outline-none"
+          className="bg-[#231f2c] outline-none w-full"
           value={searchValue}
           onChange={e => setSearchValue(e.target.value)}
           onKeyUp={e => {
             if (e.key === "Enter") {
-              router.push(`/catalog?q=${searchValue}`);
+              handleSearchSubmit();
             }
           }}
         />
       </div>
 
-      {searchValue !== "" && <SearchResults searchValue={searchValue} />}
+      {searchValue !== "" && <SearchResults 
+        searchValue={searchValue} 
+        setIsSearchBoxOpen={setIsSearchBoxOpen}
+        setSearchValue={setSearchValue}
+      />}
     </div>
   );
 }
