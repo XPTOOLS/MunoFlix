@@ -3,7 +3,7 @@ import Link from "next/link";
 import { Fragment, useCallback, useEffect, useRef, useState } from "react";
 import { FaStar } from "react-icons/fa";
 import { motion } from "framer-motion";
-import { getMultiSearch } from "@/lib/MultiFunctions";
+import { getCombinedSearch } from "@/lib/MultiFunctions";
 import { getLanguageCode } from "@/utils/SmallPrograms";
 
 const useDebounce = (value, delay) => {
@@ -29,11 +29,23 @@ const ResultItems = ({ data, setIsSearchBoxOpen, setSearchValue }) => {
     show: { scale: 1, opacity: 1, transition: { duration: 0.3 } },
   };
 
+  // Check if it's a translated movie - FIXED: Convert id to string first
+  const isTranslatedMovie = String(data?.id)?.startsWith('translated-');
+  const actualId = isTranslatedMovie ? data.id.replace('translated-', '') : data.id;
+  
+  // Determine the correct href
+  const getHref = () => {
+    if (isTranslatedMovie) {
+      return `/watch/translated/${actualId}`;
+    }
+    return `/watch/${data?.id}?media_type=${data?.media_type || "movie"}`;
+  };
+
   return (
     <motion.div variants={listItemVariants} initial="hidden" animate="show">
       <Link
         className="flex gap-[6px] w-full cursor-pointer hover:bg-[#242734]"
-        href={`/watch/${data?.id}?media_type=${data?.media_type || type || "movie"}`}
+        href={getHref()}
         onClick={() => {
           setIsSearchBoxOpen(false)
           setSearchValue("")
@@ -41,7 +53,7 @@ const ResultItems = ({ data, setIsSearchBoxOpen, setSearchValue }) => {
       >
         <div className="px-2 py-[4px] flex gap-[6px] w-full">
           <Image
-            src={data?.poster_path ? `https://image.tmdb.org/t/p/w500${data?.poster_path}` : `https://s4.anilist.co/file/anilistcdn/character/large/default.jpg`}
+            src={data?.poster_path ? `https://image.tmdb.org/t/p/w500${data?.poster_path}` : data?.poster || `https://s4.anilist.co/file/anilistcdn/character/large/default.jpg`}
             alt="Result"
             height={40}
             width={60}
@@ -50,6 +62,9 @@ const ResultItems = ({ data, setIsSearchBoxOpen, setSearchValue }) => {
           <div className="flex flex-col gap-[10px]">
             <div className="text-[#efebebf2] font-['Poppins'] font-medium text-[15px] overflow-hidden text-ellipsis line-clamp-1">
               {data?.title || data?.name || data?.original_name || data?.original_title}
+              {isTranslatedMovie && (
+                <span className="ml-1 text-xs text-green-400">[Luganda]</span>
+              )}
             </div>
             <div className="flex gap-[10px]">
               <div className="border border-[#ffffff86] text-[#ffffffab] rounded-md px-1 text-[12px] flex items-center justify-center">
@@ -61,7 +76,7 @@ const ResultItems = ({ data, setIsSearchBoxOpen, setSearchValue }) => {
               <div className="text-[#ffffffab] text-[14px]">
                 {data?.media_type ?
                   data?.media_type?.length > 2 ? data?.media_type?.charAt(0)?.toUpperCase() + data?.media_type?.slice(1)?.toLowerCase() : data?.media_type?.toUpperCase() :
-                  type === "tv" ? data?.first_air_date?.slice(0, 4) : data?.release_date?.slice(0, 4)
+                  data?.first_air_date?.slice(0, 4) || data?.release_date?.slice(0, 4) || data?.year
                 }
               </div>
             </div>
@@ -83,7 +98,7 @@ const SearchResults = ({ searchValue, setIsSearchBoxOpen, setSearchValue }) => {
       return;
     }
     try {
-      const response = await getMultiSearch(debouncedSearchValue, 1, false);
+      const response = await getCombinedSearch(debouncedSearchValue, 1, false);
       if (!response) throw new Error("Failed to fetch data");
 
       const dataJSON = response;
@@ -112,6 +127,20 @@ const SearchResults = ({ searchValue, setIsSearchBoxOpen, setSearchValue }) => {
     },
   };
 
+  // Filter function for both TMDB and translated movies - FIXED
+  const filterResults = (item) => {
+    // Convert id to string to safely check if it's a translated movie
+    const itemId = String(item.id);
+    
+    // For translated movies, we have different criteria
+    if (itemId.startsWith('translated-')) {
+      return item.vote_average > 0 && item.adult === false && item.genre_ids?.length !== 0;
+    }
+    
+    // For TMDB movies, use original criteria
+    return item.vote_average > 5 && item.adult === false && item.genre_ids?.length !== 0 && item?.backdrop_path;
+  };
+
   return (
     <motion.div
       className="bg-[#231f2c] rounded-b-md w-full absolute flex flex-col gap-2 pb-1 border-x border-b border-[#ffffff24]"
@@ -122,18 +151,16 @@ const SearchResults = ({ searchValue, setIsSearchBoxOpen, setSearchValue }) => {
       {error && <div>Error: {error}</div>}
       {Array.isArray(data?.results) &&
         data?.results
-          ?.filter(
-            (item) =>
-              item.vote_average > 5 &&
-              item.adult === false &&
-              item.genre_ids.length !== 0 &&
-              item?.backdrop_path
-          )
+          ?.filter(filterResults)
           ?.sort((a, b) => b.vote_average - a.vote_average)
           ?.slice(0, 5)
           ?.map((result) => (
             <Fragment key={result.id}>
-              <ResultItems data={result} setIsSearchBoxOpen={setIsSearchBoxOpen} setSearchValue={setSearchValue} />
+              <ResultItems 
+                data={result} 
+                setIsSearchBoxOpen={setIsSearchBoxOpen} 
+                setSearchValue={setSearchValue} 
+              />
             </Fragment>
           ))}
 
