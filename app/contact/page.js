@@ -77,8 +77,8 @@ ${formData.message}
       icon: <FaEnvelope className="text-purple-400" />,
       title: "Email Us",
       description: "Send us an email anytime",
-      details: "freenethubbusiness@gmail.com",
-      action: "mailto:freenethubbusiness@gmail.com"
+      details: "munoflixbusiness@gmail.com",
+      action: "mailto:munoflixbusiness@gmail.com"
     },
     {
       icon: <FaWhatsapp className="text-green-500" />,
@@ -91,8 +91,8 @@ ${formData.message}
       icon: <FaTelegram className="text-blue-400" />,
       title: "Telegram",
       description: "Join our community",
-      details: "@XPTOOLSTEAM",
-      action: "https://t.me/XPTOOLSTEAM"
+      details: "@MunoFlix",
+      action: "https://t.me/MunoFlix"
     },
     {
       icon: <FaMapMarkerAlt className="text-red-400" />,
@@ -107,7 +107,7 @@ ${formData.message}
     {
       icon: <FaFacebook className="text-blue-500" />,
       name: "Facebook",
-      url: "https://www.facebook.com/profile.php?id=61556002877589",
+      url: "https://www.facebook.com/share/1H8BxjWw9t/",
       handle: "MunoFlix"
     },
     {
@@ -125,8 +125,8 @@ ${formData.message}
     {
       icon: <FaYoutube className="text-red-500" />,
       name: "YouTube",
-      url: "https://youtube.com/@freenethubtech?si=q1t1496Zj6P9cmMs",
-      handle: "@freenethubtech"
+      url: "https://youtube.com/@munoflix?si=q1t1496Zj6P9cmMs",
+      handle: "@munoflix"
     }
   ];
 
