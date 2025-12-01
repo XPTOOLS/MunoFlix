@@ -4553,8 +4553,8 @@ export const translatedMovies = [
   {
     "id": "translated-the-fire-wolf-2017",
     "title": "The Fire Wolf",
-    "poster": "https://img-10.chinesemov.com/images/2017/The-Fire-Wolf-2017-1.jpg",
-    "backdrop": "https://img-10.chinesemov.com/images/2017/The-Fire-Wolf-2017-1.jpg",
+    "poster": "https://image.tmdb.org/t/p/original/gNKYgx148syFZK1l24iY5Bgoh3O.jpg",
+    "backdrop": "https://image.tmdb.org/t/p/original/gNKYgx148syFZK1l24iY5Bgoh3O.jpg",
     "videoUrl": "https://namzentertainments.xyz/projects/omufere/the%20fire%20wolf.mp4",
     "description": "When the former MMA champion, Fang Yihuo, was framed and sent to prison by Boss Jin, his young brother Fang Yishui launched a revenge plan and joined the competition. Unfortunately he was beaten to brain death by a King's player, Qian Kun. After Fang Yihuo was released from prison, he decided to participate the competition with the name of his brother and continue his brother's revenge plan.",
     "genre": ["Action", "Drama"],
@@ -4607,3 +4607,4 @@ export const getTranslatedMovieById = (id) => {
 export const getAllTranslatedMovies = () => {
   return translatedMovies;
 };
+
